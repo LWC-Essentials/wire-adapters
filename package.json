@@ -3,14 +3,13 @@
   "version": "0.0.1",
   "description": "Data management utilities for LWC, using wire adapters",
   "license": "MIT",
-  "private": true,
   "config": {
     "lwcVersion": "1.1.0"
   },
   "scripts": {
     "build": "lerna run build --stream",
     "build:app": "lerna run build --scope sample-app --stream",
-    "publish": "lerna run publish --stream",
+    "build-publish": "lerna run build-publish --stream",
     "clean": "lerna run clean --stream",
     "start": "yarn start:lwc",
     "start:watch": "yarn start:lwc:watch",

@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "pack": "yarn build && yarn pack",
-    "publish": "yarn pack && yarn publish -f",
+    "build-publish": "yarn build && yarn pack && yarn publish --access public",
     "clean": "rm ./*.tgz"
   },
   "files": [

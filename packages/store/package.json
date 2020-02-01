@@ -1,6 +1,7 @@
 {
   "name": "@lwce/store",
   "version": "0.0.1",
+  "private": false,
   "description": "LWC global store",
   "author": "Philippe Riand",
   "bugs": "https://github.com/LWC-Essentials/wire-adapters/issues",
@@ -8,7 +9,7 @@
   "scripts": {
     "build": "tsc && cp src/index.js dist/es6 && cp src/store/initstore.js dist/es6/store",
     "pack": "yarn build && yarn pack",
-    "publish": "yarn pack && yarn publish -f",
+    "build-publish": "yarn build && yarn pack && yarn publish --access public",
     "clean": "rm ./*.tgz"
   },
   "files": [
@@ -22,7 +23,6 @@
   "devDependencies": {
     "copy": "^0.3.2"
   },
-  "author": "Philippe Riand",
   "license": "BSD 3-Clause",
   "homepage": "https://github.com/LWC-Essentials/wire-adapters",
   "keywords": [
