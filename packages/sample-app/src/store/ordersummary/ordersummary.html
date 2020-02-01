@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2020, salesforce.com, inc.
+    All rights reserved.
+    SPDX-License-Identifier: BSD-3-Clause
+    For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+-->
+<template>
+    <div class="p-4">
+        <p class="font-italic mb-4">Shipping and additional costs are calculated based on the number of items you selected.</p>
+        <ul class="list-unstyled mb-4">
+            <li class="d-flex justify-content-between py-3 border-bottom">
+                <strong class="text-muted">Order Subtotal </strong>
+                <strong><form-fmtcurrency value={summary.sub}></form-fmtcurrency></strong>
+            </li>
+            <li class="d-flex justify-content-between py-3 border-bottom">
+                <strong class="text-muted">Shipping and handling</strong>
+                <strong>
+                    <form-fmtcurrency value={summary.ship}></form-fmtcurrency></strong>
+            </li>
+            <li class="d-flex justify-content-between py-3 border-bottom">
+                <strong class="text-muted">Tax</strong>
+                <strong><form-fmtcurrency value={summary.tax}></form-fmtcurrency></strong>
+            </li>
+            <li class="d-flex justify-content-between py-3 border-bottom">
+                <strong class="text-muted">Total</strong>
+                <h5 class="font-weight-bold"><form-fmtcurrency value={summary.total}></form-fmtcurrency></h5>
+            </li>
+        </ul><a href="#" class="btn btn-dark rounded-pill py-2 btn-block">Proceed to checkout</a>
+    </div>
+</template>

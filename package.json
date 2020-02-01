@@ -1,0 +1,50 @@
+{
+  "name": "@lwce/wire-adapters",
+  "version": "0.0.1",
+  "description": "Data management utilities for LWC, using wire adapters",
+  "license": "MIT",
+  "private": true,
+  "config": {
+    "lwcVersion": "1.1.0"
+  },
+  "scripts": {
+    "build": "lerna run build --stream",
+    "build:app": "lerna run build --scope sample-app --stream",
+    "publish": "lerna run publish --stream",
+    "clean": "lerna run clean --stream",
+    "start": "yarn start:lwc",
+    "start:watch": "yarn start:lwc:watch",
+    "stop": "yarn stop:lwc",
+    "start:lwc": "lerna run start --scope sample-app --stream",
+    "start:lwc:watch": "lerna run start:watch --scope sample-app --stream",
+    "stop:lwc": "lerna run stop --scope sample-app --stream",
+    "update-license-headers": "node ./scripts/license-header.js"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/fetch",
+      "packages/store",
+      "packages/sample-app"
+    ]
+  },
+  "engines": {
+    "yarn": ">=1.10.1",
+    "node": ">=10.6.0"
+  },
+  "dependencies": {
+    "@lwc/engine": "1.1.13",
+    "@lwc/wire-service": "^1.1.13"
+  },
+  "devDependencies": {
+    "rollup": "^1.7.4",
+    "rollup-plugin-cleanup": "^3.1.1",
+    "rollup-plugin-compat": "^0.22.0",
+    "rollup-plugin-node-resolve": "^4.2.4",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-terser": "^4.0.4",
+    "rollup-plugin-typescript": "^1.0.0",
+    "tslib": "^1.10.0",
+    "typescript": "~3.6.2",
+    "lerna": "^3.17.0"
+  }
+}

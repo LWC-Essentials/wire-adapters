@@ -1,0 +1,33 @@
+<!--
+    Copyright (c) 2020, salesforce.com, inc.
+    All rights reserved.
+    SPDX-License-Identifier: BSD-3-Clause
+    For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+-->
+<template>
+
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">LWC Store</h1>
+            <p>This is a demo of the LWC store, showing a common cart object shared between multiple components in the screen.</p>
+        </div>
+    </div>
+
+    <div class="row py-5 p-4 bg-white rounded shadow-sm">
+
+        <div class="col-lg-8">
+            <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Your Shopping Cart <store-carticon></store-carticon></div>
+            <store-cart></store-cart>
+            <div>
+                <button onclick={handleAddBeer} class="btn btn-light rounded-pill py-2" style="margin-left:1em">Add a Beer Order</button>
+                <button onclick={handleReset} class="btn btn-light rounded-pill py-2" style="margin-left:1em">Reset Cart</button>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Order summary </div>
+            <store-ordersummary></store-ordersummary>
+        </div>
+
+    </div>
+</template>

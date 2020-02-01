@@ -1,0 +1,80 @@
+{
+    "name": "sample-app",
+    "description": "Sample LWC Wire Adapter Application",
+    "version": "0.0.1",
+    "author": "Philippe Riand",
+    "bugs": "https://github.com/LWC-Essentials/wire-adapters/issues",
+    "dependencies": {
+        "compression": "^1.7.4",
+        "express": "~4.16.3",
+        "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-node-builtins": "^2.1.2",
+        "rollup-plugin-node-globals": "^1.4.0",
+        "useragent": "~2.3.0"
+    },
+    "devDependencies": {
+        "@lwc/compiler": "1.1.13",
+        "@lwc/engine": "1.1.13",
+        "@lwc/features": "1.1.13",
+        "@lwc/jest-preset": "2.2.0",
+        "@lwc/rollup-plugin": "1.1.13",
+        "@lwc/synthetic-shadow": "^1.1.13",
+        "@lwc/wire-service": "^1.1.13",
+        "@salesforce/eslint-config-lwc": "~0.3.0",
+        "@wdio/cli": "~5.9.3",
+        "@wdio/local-runner": "~5.9.3",
+        "@wdio/mocha-framework": "~5.9.3",
+        "@wdio/selenium-standalone-service": "~5.9.3",
+        "@wdio/spec-reporter": "~5.9.3",
+        "@wdio/sync": "~5.9.3",
+        "babel-eslint": "^10.0.1",
+        "concurrently": "~4.0.1",
+        "cross-env": "^6.0.3",
+        "eslint": "^5.10.0",
+        "jest": "~24.8.0",
+        "lint-staged": "^9.4",
+        "@lwce/fetch": "0.0.1",
+        "@lwce/store": "0.0.1",
+        "npm-run-all": "^4.1.5",
+        "rollup": "^1.26.0",
+        "rollup-plugin-compat": "0.21.5",
+        "rollup-plugin-copy": "^3.1.0",
+        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup-plugin-replace": "~2.1.0",
+        "rollup-plugin-terser": "^5.1.2"
+    },
+    "engines": {
+        "node": ">=10.13.0",
+        "npm": ">=6.4.1",
+        "yarn": ">=1.9.4"
+    },
+    "homepage": "https://github.com/salesforce/data-management",
+    "keywords": [
+        "lwc"
+    ],
+    "license": "MIT",
+    "lint-staged": {
+        "**/*.{css,html,js,json,md,ts,yaml,yml}": [
+            "prettier --write"
+        ],
+        "./src/**/*.js": [
+            "eslint"
+        ],
+        "*": [
+            "git add"
+        ]
+    },
+    "repository": "priansf/lwc-sfra-cartridge",
+    "scripts": {
+        "build": "cross-env rollup -c ./scripts/rollup.config.js",
+        "build:production": "cross-env NODE_ENV=production rollup -c ./scripts/rollup.config.js",
+        "lint": "eslint ./src/**/*.js",
+        "prettier": "prettier --write '**/*.{css,html,js,json,md,ts,yaml,yml}'",
+        "prettier:verify": "prettier --list-different '**/*.{css,html,js,json,md,ts,yaml,yml}'",
+        "serve": "node index.js",
+        "start": "concurrently --kill-others \"yarn build --watch\" \"yarn serve\"",
+        "test": "yarn test:unit && yarn test:integration",
+        "test:integration": "wdio ./scripts/wdio.conf.js",
+        "test:unit": "jest"
+    }
+}

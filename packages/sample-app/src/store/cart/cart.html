@@ -1,0 +1,72 @@
+<!--
+    Copyright (c) 2020, salesforce.com, inc.
+    All rights reserved.
+    SPDX-License-Identifier: BSD-3-Clause
+    For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+-->
+<template>
+    <template if:true={cart.loading}>
+        <div class="text-center" style="margin-top: 2em; margin-bottom: 2em;">
+            <span class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </span>
+            <span style="margin-left: 2em">Retrieving Saved Cart...</span>
+        </div>
+    </template>
+
+    <template if:true={cart.data}>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="border-bottom">
+                        <th scope="col" class="border-0">
+                            <div class="p-2 px-3 text-uppercase">Product</div>
+                        </th>
+                        <th scope="col" class="border-0">
+                            <div class="py-2 text-uppercase">Unit Price</div>
+                        </th>
+                        <th scope="col" class="border-0">
+                            <div class="py-2 text-uppercase">Quantity</div>
+                        </th>
+                        <th scope="col" class="border-0">
+                            <div class="py-2 text-uppercase">Total Price</div>
+                        </th>
+                        <th scope="col" class="border-0">
+                            <div class="py-2 text-uppercase">Remove</div>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <template for:each={cart.data.items} for:item="item" for:index="index">
+                        <tr key={item.id} data-index={index}>
+                            <th scope="row" class="border-0">
+                                <div class="p-2">
+                                    <img src={item.image} alt="" width="70" class="img-fluid rounded shadow-sm">
+                                    <div class="ml-3 d-inline-block align-middle">
+                                        <h5 class="mb-0"> <a href="#" class="text-dark d-inline-block align-middle">{item.label}</a></h5><span class="text-muted font-weight-normal font-italic d-block">{item.desc}</span>
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="border-0 align-middle">
+                                <strong><form-fmtcurrency value={item.price}></form-fmtcurrency></strong>
+                            </td>
+                            <td class="border-0 align-middle">
+                                <button type="button" onclick={handleIncQuantity} class="btn btn-light"><i class="fa fa-plus"></i></button>
+                                <strong style="margin-left: 0.8em; margin-right: 0.8em;">{item.quantity}</strong>
+                                <button type="button" onclick={handleDecQuantity} class="btn btn-light"><i class="fa fa-minus"></i></button>
+                            </td>
+                            <td class="border-0 align-middle">
+                                <strong><form-fmtcurrency value={item.total}></form-fmtcurrency></strong>
+                            </td>
+                            <td class="border-0 align-middle">
+                                <button type="button" class="btn btn-light" onclick={handleDelete}><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+</template>

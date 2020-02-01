@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+
+    "declaration": true,
+    "sourceMap": true,
+
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+
+    "target": "es2018",
+  },
+
+  "exclude": [
+    "**/__tests__",
+  ]
+}

@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "module": "es6",
+        "outDir": "dist/es6",
+        "declarationDir": "dist/types",
+
+        "lib": ["dom", "es2015", "es2016", "es2017", "es2018"]
+    },
+
+    "include": ["src/"]
+}

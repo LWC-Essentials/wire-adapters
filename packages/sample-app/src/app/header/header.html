@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2020, salesforce.com, inc.
+    All rights reserved.
+    SPDX-License-Identifier: BSD-3-Clause
+    For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+-->
+<template>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark ustify-content-between">
+            <a class="navbar-brand" href="#">LWC Wire Adapter Examples</a>
+            <a class="p-2" if:true={user.data} href="#">{user.data.firstName} {user.data.lastName}</a>
+            <a class="p-2" if:false={user.data} href="#">Anonymous</a>
+        </nav>
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <a class="navbar-brand" href="#">LWC Wire Adapter Examples</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="#" onclick={handleStore}>Store</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="#" onclick={handleFetch}>Fetch</a>
+                </li>
+              </ul>
+              <div class="nav-item my-2 my-lg-0">
+                <a class="nav-link" if:true={user.data} href="#">{user.data.firstName} {user.data.lastName}</a>
+                <a class="nav-link" if:false={user.data} href="#">Anonymous</a>
+              </div>
+            </div>
+        </nav>
+    </header>
+</template>

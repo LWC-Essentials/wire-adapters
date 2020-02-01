@@ -1,0 +1,32 @@
+{
+  "name": "@lwce/fetch",
+  "version": "0.0.1",
+  "author": "Philippe Riand",
+  "bugs": "https://github.com/LWC-Essentials/wire-adapters/issues",
+  "description": "LWC HTTP Fetch",
+  "main": "dist/es6/index.js",
+  "typings": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "pack": "yarn build && yarn pack",
+    "publish": "yarn pack && yarn publish -f",
+    "clean": "rm ./*.tgz"
+  },
+  "files": [
+    "dist/",
+    "types/"
+  ],
+  "devDependencies": {
+    "@lwc/engine": "1.1.13",
+    "@lwc/wire-service": "^1.1.13"
+  },
+  "license": "BSD 3-Clause",
+  "homepage": "https://github.com/LWC-Essentials/wire-adapters",
+  "keywords": [
+      "lwc", "wire adapter"
+  ],
+  "engines": {
+    "yarn": ">=1.10.1",
+    "node": ">=10.6.0"
+  }
+}

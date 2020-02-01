@@ -1,0 +1,72 @@
+<!--
+    Copyright (c) 2020, salesforce.com, inc.
+    All rights reserved.
+    SPDX-License-Identifier: BSD-3-Clause
+    For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+-->
+<template>
+    <template if:true={isLoading}>
+        <div class="text-center" style="margin-top: 2em; margin-bottom: 2em;">
+            <span class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </span>
+            <span style="margin-left: 2em">Loading Users...</span>
+        </div>
+    </template>
+
+    <template if:true={hasData}>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item">
+                <a onclick={handleFirst} class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">First</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a onclick={handlePrev} class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&lsaquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item"><a class="page-link" href="#">{pageNavigation}</a></li>
+              <li class="page-item">
+                <a onclick={handleNext} class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&rsaquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a onclick={handleLast} class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Last</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a onclick={handleRefetch} class="page-link" href="#" aria-label="Next">
+                    <span class="fa fa-refresh" aria-hidden="true"></span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+
+        <br/>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">eMail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={users.data.users} for:item='user'>
+                    <tr  key={user.email}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </template>
+</template>
