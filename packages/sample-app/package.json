@@ -48,7 +48,7 @@
         "npm": ">=6.4.1",
         "yarn": ">=1.9.4"
     },
-    "homepage": "https://github.com/salesforce/data-management",
+    "homepage": "https://github.com/LWC-Essentials/wire-adapters",
     "keywords": [
         "lwc"
     ],
