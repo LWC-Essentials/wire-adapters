@@ -1,7 +1,6 @@
 {
   "name": "@lwce/store",
   "version": "0.0.1",
-  "private": false,
   "description": "LWC global store",
   "author": "Philippe Riand",
   "bugs": "https://github.com/LWC-Essentials/wire-adapters/issues",

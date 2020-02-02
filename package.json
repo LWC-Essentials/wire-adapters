@@ -2,7 +2,8 @@
   "name": "@lwce/wire-adapters",
   "version": "0.0.1",
   "description": "Data management utilities for LWC, using wire adapters",
-  "license": "MIT",
+  "private": true,
+  "license": "BSD 3-Clause",
   "config": {
     "lwcVersion": "1.1.0"
   },
