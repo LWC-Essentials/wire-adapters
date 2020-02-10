@@ -3,6 +3,7 @@
     "description": "Sample LWC Wire Adapter Application",
     "version": "0.0.1",
     "private": true,
+    "license": "BSD-3-Clause",
     "author": "Philippe Riand",
     "bugs": "https://github.com/LWC-Essentials/wire-adapters/issues",
     "dependencies": {
@@ -53,7 +54,6 @@
     "keywords": [
         "lwc"
     ],
-    "license": "BSD 3-Clause",
     "lint-staged": {
         "**/*.{css,html,js,json,md,ts,yaml,yml}": [
             "prettier --write"

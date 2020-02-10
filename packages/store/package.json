@@ -2,9 +2,11 @@
   "name": "@lwce/store",
   "version": "0.0.1",
   "description": "LWC global store",
+  "license": "BSD-3-Clause",
   "author": "Philippe Riand",
   "bugs": "https://github.com/LWC-Essentials/wire-adapters/issues",
   "main": "dist/es6/index.js",
+  "typings": "dist/types/index.d.ts",
   "scripts": {
     "build": "tsc && cp src/index.js dist/es6 && cp src/store/initstore.js dist/es6/store",
     "pack": "yarn build && yarn pack",
@@ -15,14 +17,13 @@
     "dist/",
     "types/"
   ],
-  "dependencies": {
+  "devDependencies": {
+    "copy": "^0.3.2",
     "@lwc/engine": "^1.1.13",
     "@lwc/wire-service": "^1.1.13"
   },
-  "devDependencies": {
-    "copy": "^0.3.2"
+  "dependencies": {
   },
-  "license": "BSD 3-Clause",
   "homepage": "https://github.com/LWC-Essentials/wire-adapters",
   "keywords": [
       "lwc", "wire adapter"

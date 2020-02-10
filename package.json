@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Data management utilities for LWC, using wire adapters",
   "private": true,
-  "license": "BSD 3-Clause",
+  "license": "BSD-3-Clause",
   "config": {
     "lwcVersion": "1.1.0"
   },
