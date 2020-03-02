@@ -8,7 +8,7 @@ type RequestInterceptor = (init?: RequestInit) => RequestInit|Promise<RequestIni
 type ResponseInterceptor = (value: any, response: Response) => any|Promise<any>;
 
 function substitute(template: string, variables: Record<string,string>) {
-    return template.replace(/\{(.*?)}/g, (_, i) => variables[i]);
+    return template.replace(/\{(.*?)}/g, (_, i) => encodeURIComponent(variables[i]));
 }
 
 export class FetchClient {
@@ -32,21 +32,35 @@ export class FetchClient {
         this.responseInterceptors.push(interceptor);
     }
 
-    async fetch(input: string, init?: RequestInit, variables?:Record<string, any>): Promise<Response> {
+    composeUrl(input: string, init?: RequestInit, queryParams?:Record<string, any>|undefined, variables?:Record<string, any>|undefined): string {
         // Concat the base URL if not absolute
         if(this.url && input.indexOf('://')<0) {
             input = `${this.url}${input}`;
         }
 
+        // Append the query parameters
+        if(queryParams) {
+            Object.keys(queryParams).forEach( (q: any) => {
+                if(queryParams[q]!==undefined) {
+                    // Could use searchparams with the latest browsers
+                    input += (input.match( /[\?]/g ) ? '&' : '?') + encodeURIComponent(q);
+                    if(queryParams[q]!==null) {
+                        input += '=' + encodeURIComponent(queryParams[q]);
+                    }
+                }
+            });
+        }
+
         // Substitute the variables
         if(variables) {
             input = substitute(input,variables);
-            if(init) {
-                if(typeof init.body==='string') {
-                    input = substitute(input,variables);
-                }
-            }
         }
+
+        return input;
+    }
+
+    async fetch(input: string, init?: RequestInit, queryParams?:Record<string, any>|undefined, variables?:Record<string, any>|undefined): Promise<Response> {
+        input = this.composeUrl(input,init,queryParams,variables);
  
         // Process the request interceptors
         const reqI = this.requestInterceptors;

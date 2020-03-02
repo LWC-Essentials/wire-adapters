@@ -11,7 +11,8 @@
     "build": "tsc",
     "pack": "yarn build && yarn pack",
     "build-publish": "yarn build && yarn pack && yarn publish --access public",
-    "clean": "rm ./*.tgz"
+    "clean": "rm ./*.tgz",
+    "test": "jest"
   },
   "files": [
     "dist/",

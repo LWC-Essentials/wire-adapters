@@ -60,9 +60,9 @@
                 </tr>
             </thead>
             <tbody>
-                <template for:each={users.data.users} for:item='user'>
-                    <tr  key={user.email}>
-                        <td>{user.name}</td>
+                <template for:each={users.data.users} for:item='user' for:index="index">
+                    <tr key={user.email} useridx={index}>
+                        <td><a onclick={handleUserClick} href='#'>{user.name}</a></td>
                         <td>{user.email}</td>
                     </tr>
                 </template>

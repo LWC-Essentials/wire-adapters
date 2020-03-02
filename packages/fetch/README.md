@@ -15,43 +15,49 @@ The options are the following:
 
   - `url`: the fetch URL.  
   If this URL is relative, then it is appended to the `FetchClient` base URL (see bellow).  
-  - `init`: the options passed to the fetch method (a [RequestInit](https://fetch.spec.whatwg.org/#requestinit) object).  
+  - `init`: the options passed to the native fetch method (a [RequestInit](https://fetch.spec.whatwg.org/#requestinit) object).  
+  - `queryParams`: query parameters.  
+  The `queryParams` option lists the parameters to be added to the query string of the url. An `undefined` value for a parameter prevents the parameter to be added, while a `null` value adds it without a value (just the parameter name, no '=' sign). Each parameter, name & value, is properly encoded using `encodeURIComponent()`.  
   - `variables`: substitution variables.  
-  The URL parts between `{}` are substituted by these variables. It also applies to the `body` member of `init`, if any.  
+  The URL parts between `{}` are substituted by these variables. The value is encoded using `encodeURIComponent()`. As it better handles `undefined` and `null` values, it is advised to use `queryParams` for the query string.  
 
-Here is an example:  
+Here is an example showing these capabilities:  
 
 ```javascript
-export default class UserList extends LightningElement {
+export default class ComputerList extends LightningElement {
 
     @track variables = {
+        instance: 'xyz'
+    }
+
+    @track queryParams = {
         offset: 0,
         limit: 10
     }
 
     @wire(useFetch, {
-        url: '/users?offset={offset}&limit={limit}',
-        variables: '$variables'
-    }) users;
+        url: '/{instance}/computers',
+        variables: '$variables',
+        queryParams: '$queryParams'
+    }) computers;
 ```
 
-Note: to make the wire adapter react on a variable value change, the whole `variables` object has to be replaced, as a change in a property is not detected. For example, changing the offset should be done with code like:  
+Note: to make the wire adapter react on a variable value change, the whole `queryParams` or `variables` objects have to be replaced, as a change in one of their properties is not detected. For example, changing the offset should be done with code like:  
 
 ```javascript
 	 // Right way to update an object
     handleFirst() {
-        this.variables = {
-            ...this.variables,
+        this.queryParams = {
+            ...this.queryParams,
             offset: 0
         }
     }
     
 //    // This does not trigger a wire adapter change!
 //    handleFirst() {
-//        this.variables.offset = 0;
+//        this.queryParams.offset = 0;
 //    }
 ```  
-
 
 ### Fetch Result
 
@@ -64,10 +70,8 @@ The fetch wire adapter assigns the following values to the variable:
     initialized:    boolean;			// true of the request has been executed at least once	
 
     client:         FetchClient,		// FetchClient used for the request
-    fetch?:         (options, v)		// fetch() method to re-execute the request (see 'lazy')
-```
-
-
+    fetch?:         (options, q, v): Promise<void>		// fetch() method to re-execute the request (see 'lazy')
+```  
 
 ### FetchClient
 
@@ -78,8 +82,7 @@ Behind the scene, `useFetch` uses a `FetchClient` instance that holds a base URL
     	client: myFetchClient,
     	...
     }) mydata;
-```
-
+```  
 
 ### Fetch URL
 
@@ -115,17 +118,23 @@ Note that some of these options (authentication headers, cors mode, cache...) sh
 
 ### Lazy mode
 
-The request is automatically emitted when the wire adapter config is available, which means when the component is connected to the DOM. This works well for data needed by the component to display right away but, sometimes, the request should be executed manually. This is certainly true for update requests (POST,PUT,DELETE) and for data requested on demand (list for a pop-up, ...). To support that, the wire adapter offers a 'lazy' mode. When set to true, the request is only executed with an explicit call the `fetch()`.  
+The request is automatically emitted when the wire adapter config is available, which means when the component is connected to the DOM. This works well for data needed by the component to display right away but, sometimes, the request should be executed manually. This is certainly true for update requests (POST,PUT,DELETE) and for data requested on demand (list for a pop-up, ...).  
+
+To support that, the wire adapter offers a 'lazy' mode. When set to true, the request is only executed with an explicit call the `fetch()`.  
 
 The fetch method has the following signature:  
 
 ```javascript
-    fetch(init?: RequestInit, variables?: Record<string, any>): void
+    fetch(init?: RequestInit, queryParams?: Record<string, any>, variables?: Record<string, any>): Promise<void>
 ``` 
 - init  
   These are initialization parameters that are merged with the ones defined at the adapter level.  
+- queryParams  
+  Replaces, if defined, the query parameters defined at the wire adapter level.  
 - variables  
-  Replaces (no merge) the variables defined at the wire adapter level.  
+  Replaces, if defined, the variables defined at the wire adapter level.  
+  
+The function returns a `Promise` that one can observe to know when the result has been retrieved. The `Promise` does not provide that value, but it can be accessed from the object member.  
 
 Here is an example:   
 
@@ -144,7 +153,11 @@ Here is an example:
 
 ### Current limitations
 
-`useFetch` does not use a store behind the scene, which means that the request results are not cached and shared between adapters. Such a cache should better be implemented at the `FetchClient` level.
+`useFetch` it kept simple on purpose, but sould be extensible:  
+
+- It does not use a store behind the scene, which means that the request results are not cached and shared between adapters.  
+
+- It does not normalize the data (see: [normalizr.js](https://github.com/paularmstrong/normalizr)).
 
 
 ## FetchClient

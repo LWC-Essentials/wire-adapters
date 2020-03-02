@@ -7,17 +7,25 @@
 import { LightningElement, wire, track } from 'lwc';
 import { useFetch } from '@lwce/fetch';
 
-export default class Checkout extends LightningElement {
+export default class Users extends LightningElement {
 
-    @track variables = {
+    @track queryParams = {
         offset: 0,
         limit: 10
     }
-
     @wire(useFetch, {
-        url: '/users?offset={offset}&limit={limit}',
-        variables: '$variables'
+        url: '/users',
+        queryParams: '$queryParams'
     }) users;
+
+    @track variables = {
+        userId: 'xyz'
+    }
+    @wire(useFetch, {
+        url: '/users/{userId}',
+        lazy: true,
+        variables: '$variables'
+    }) userById;
 
     get isLoading() {
         return !this.users.initialized && this.users.loading;
@@ -27,44 +35,63 @@ export default class Checkout extends LightningElement {
     }
 
     get pageNavigation() {
-        const { offset, limit } = this.variables;
+        const { offset, limit } = this.queryParams;
         const page = offset/limit + 1;
         const total = this.users.data.totalCount/limit + 1;
         return page.toFixed(0) + "/" + total.toFixed(0);
     }
 
-    // Because changing a 'variables' attribute does not trigger a refresh config,
-    // We have to reassign a whole new 'variables' object, by copying the old one
+    // Because changing a 'queryParams' attribute does not trigger a refresh config,
+    // We have to reassign a whole new 'queryParams' object, by copying the old one
     // and changing the desired values
     handleFirst() {
-        this.variables = {
-            ...this.variables,
+        this.queryParams = {
+            ...this.queryParams,
             offset: 0
         }
     }
     handlePrev() {
-        if(this.variables.offset>0) {
-            this.variables = {
-                ...this.variables,
-                offset: this.variables.offset - this.variables.limit
+        if(this.queryParams.offset>0) {
+            this.queryParams = {
+                ...this.queryParams,
+                offset: this.queryParams.offset - this.queryParams.limit
             }
         }
     }
     handleNext() {
-        if( (this.variables.offset+this.variables.limit)<this.users.data.totalCount ) {
-            this.variables = {
-                ...this.variables,
-                offset: this.variables.offset + this.variables.limit
+        if( (this.queryParams.offset+this.queryParams.limit)<this.users.data.totalCount ) {
+            this.queryParams = {
+                ...this.queryParams,
+                offset: this.queryParams.offset + this.queryParams.limit
             }
         }
     }
     handleLast() {
-        this.variables = {
-            ...this.variables,
-            offset: Math.floor(this.users.data.totalCount / this.variables.limit) * this.variables.limit
+        this.queryParams = {
+            ...this.queryParams,
+            offset: Math.floor(this.users.data.totalCount / this.queryParams.limit) * this.queryParams.limit
         }
     }
     handleRefetch() {
         this.users.fetch();
+    }
+
+    _findUserIdx(event) {
+        for(let e=event.target; e; e=e.parentNode) {
+            if(e.hasAttribute && e.hasAttribute("useridx")) {
+                return parseInt(e.getAttribute("useridx"),10);
+            }
+        }
+        return undefined;
+    }
+
+    handleUserClick(event) {
+        const idx = this._findUserIdx(event);
+        if(idx!==undefined) {
+            this.userById.fetch(undefined,undefined,{userId:this.users.data.users[idx].email}).then( () => {
+                // eslint-disable-next-line no-alert
+                alert(JSON.stringify(this.userById.data));
+            });
+        }
     }
 }

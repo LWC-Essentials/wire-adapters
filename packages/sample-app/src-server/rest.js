@@ -6,6 +6,12 @@
 */
 const users = require('./users.json');
 
+function findUser(id) {
+    return users.find( (u) => {
+        return u.email===id;
+    })
+}
+
 function initRest(app) {
     app.get('/api/users', (req, res) => {
         // Ok, slowing down the request - not something to normally do in production!!!
@@ -22,7 +28,12 @@ function initRest(app) {
     });
 
     app.get('/api/users/:id', (req, res) => {
-        return res.send(users[parseInt(req.params.id,10)]);
+        const u = findUser(req.params.id);
+        if(u) {
+            res.send(u);
+        } else {
+            res.status(404).send('Not found')
+        }
     });
 }
 

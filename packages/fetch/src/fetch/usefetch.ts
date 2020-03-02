@@ -15,7 +15,7 @@ interface Result {
     initialized:    boolean;
 
     client:         FetchClient;
-    fetch?:         (options?: RequestInit, v?: Record<string, any>) => void;
+    fetch?:         (options?: RequestInit, q?: Record<string, any>|undefined, v?: Record<string, any>|undefined) => Promise<void>;
 }
 
 //
@@ -36,8 +36,10 @@ register(useFetch, eventTarget => {
         },
         init:RequestInit|undefined,
         url:string|undefined, 
+        queryParams:Record<string,any>,
         variables:Record<string,any>,
-        lazy=false;
+        lazy=false,
+        fetchCurrent=0;
 
     function update() {
         if(connected) {
@@ -47,41 +49,52 @@ register(useFetch, eventTarget => {
         }
     }
 
-    function fetch(options?: RequestInit, v?: Record<string, any>): void {
+    function fetch(options?: RequestInit, qp?: Record<string, any>|undefined, v?: Record<string, any>|undefined): Promise<void> {
         if(url) {
             const _init = {...init, ...options};
             pendingResult.loading = true;
+            const fetchIndex=++fetchCurrent;
             update();
             try {
-                pendingResult.client.fetch(url,_init,v||variables).then( (response) => {
+                return pendingResult.client.fetch(url,_init,qp||queryParams,v||variables).then( (response) => {
                     return response.json();
                 }).then( (json: any) => {
-                    Object.assign(pendingResult, {
-                        loading: false,
-                        data: json,
-                        error: undefined,
-                        initialized: true
-                    })
-                    update();
+                    if(fetchIndex==fetchCurrent) {
+                        Object.assign(pendingResult, {
+                            loading: false,
+                            data: json,
+                            error: undefined,
+                            initialized: true
+                        })
+                        update();
+                        return Promise.resolve();
+                    }
                 }).catch( (err: any) => {
+                    if(fetchIndex==fetchCurrent) {
+                        Object.assign(pendingResult, {
+                            loading: false,
+                            data: undefined,
+                            error: (err && err.toString()) || "Error",
+                            initialized: true
+                        })
+                        update();
+                        return Promise.resolve();
+                    }
+                });
+            } catch (error) {
+                if(fetchIndex==fetchCurrent) {
                     Object.assign(pendingResult, {
                         loading: false,
                         data: undefined,
-                        error: (err && err.toString()) || "Error",
+                        error: error.toString(),
                         initialized: true
                     })
                     update();
-                });
-            } catch (error) {
-                Object.assign(pendingResult, {
-                    loading: false,
-                    data: undefined,
-                    error: error.toString(),
-                    initialized: true
-                })
-                update();
+                    return Promise.resolve();
+                }
             }
         }
+        return Promise.reject()
     }
 
     function handleConfig(options:any) {
@@ -93,6 +106,7 @@ register(useFetch, eventTarget => {
         lazy = options.lazy
         init = options.init
         variables = options.variables;
+        queryParams = options.queryParams;
         if(!lazy) {
             fetch();
         } else {
