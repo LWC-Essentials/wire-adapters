@@ -1,5 +1,7 @@
 # @lwce/store
 
+[![npm version](https://img.shields.io/npm/v/@lwce/store?style=flat)](https://www.npmjs.com/package/@lwce/store)
+
 This library provides a global store use to manage shared component state.  It allows components to store their data globally and react then the data is updated, either programmatically or from another component.  
 
 

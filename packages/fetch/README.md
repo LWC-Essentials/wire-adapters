@@ -1,5 +1,7 @@
 # @lwce/fetch
 
+[![npm version](https://img.shields.io/npm/v/@lwce/fetch?style=flat)](https://www.npmjs.com/package/@lwce/fetch)
+
 This library allows LWC components to connect to REST services using an easy syntax wrapping the browser `fetch()` method.
 
 
