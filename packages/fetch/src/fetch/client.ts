@@ -11,6 +11,13 @@ function substitute(template: string, variables: Record<string,string>) {
     return template.replace(/\{(.*?)}/g, (_, i) => encodeURIComponent(variables[i]));
 }
 
+function concatPath(parts: string[]) {
+    return parts.map(function(p:string) { 
+            return p.replace(/(^[\/]*|[\/]*$)/g, ''); 
+        }).join('/');
+}
+
+
 export class FetchClient {
 
     url: string;
@@ -32,10 +39,10 @@ export class FetchClient {
         this.responseInterceptors.push(interceptor);
     }
 
-    composeUrl(input: string, init?: RequestInit, queryParams?:Record<string, any>|undefined, variables?:Record<string, any>|undefined): string {
+    composeUrl(input: string, queryParams?:Record<string, any>|undefined, variables?:Record<string, any>|undefined): string {
         // Concat the base URL if not absolute
         if(this.url && input.indexOf('://')<0) {
-            input = `${this.url}${input}`;
+            input = concatPath([this.url,input]);
         }
 
         // Append the query parameters
@@ -60,7 +67,7 @@ export class FetchClient {
     }
 
     async fetch(input: string, init?: RequestInit, queryParams?:Record<string, any>|undefined, variables?:Record<string, any>|undefined): Promise<Response> {
-        input = this.composeUrl(input,init,queryParams,variables);
+        input = this.composeUrl(input,queryParams,variables);
  
         // Process the request interceptors
         const reqI = this.requestInterceptors;

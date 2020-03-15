@@ -20,11 +20,16 @@
   ],
   "devDependencies": {
     "@lwc/engine": "1.1.13",
-    "@lwc/wire-service": "^1.1.13"
+    "@lwc/wire-service": "^1.1.13",
+    "@types/jest": "^25.1.4",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
   },
   "homepage": "https://github.com/LWC-Essentials/wire-adapters",
   "keywords": [
-      "lwc", "wire adapter"
+    "lwc",
+    "wire adapter"
   ],
   "engines": {
     "yarn": ">=1.10.1",

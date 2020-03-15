@@ -40,9 +40,11 @@ export default class ComputerList extends LightningElement {
         variables: '$variables',
         queryParams: '$queryParams'
     }) computers;
-```
+```  
 
-Note: to make the wire adapter react on a variable value change, the whole `queryParams` or `variables` objects have to be replaced, as a change in one of their properties is not detected. For example, changing the offset should be done with code like:  
+The initial fetch URL will be something like: `https://myserver/api/xyz?offset=0&limit=10`  
+
+Note: to make the wire adapter react on a variable value change, the whole `queryParams` or `variables` objects have to be replaced, as a change in one of their sub-properties is not detected. For example, changing the offset should be done with code like:  
 
 ```javascript
 	 // Right way to update an object
@@ -61,16 +63,16 @@ Note: to make the wire adapter react on a variable value change, the whole `quer
 
 ### Fetch Result
 
-The fetch wire adapter assigns the following values to the variable:  
+The fetch wire adapter assigns the following values to the result variable:  
 
 ```javascript
-    loading:        boolean;			// true when the request is excuting
-    data?:          any;				// Result if the request was succesful
-    error?:         string;			// Error message if an error occurred
-    initialized:    boolean;			// true of the request has been executed at least once	
+    loading:        boolean;  // true when the request is being executed
+    data?:          any;      // Data if the request was succesful
+    error?:         string;   // Error message if an error occurred
+    initialized:    boolean;  // true when the request has already been executed at least once	
 
-    client:         FetchClient,		// FetchClient used for the request
-    fetch?:         (options, q, v): Promise<void>		// fetch() method to re-execute the request (see 'lazy')
+    client:         FetchClient, // FetchClient used for the request
+    fetch?:         (options, q, v): Promise<void> // fetch() method to re-execute the request (see 'lazy')
 ```  
 
 ### FetchClient
@@ -118,23 +120,23 @@ Note that some of these options (authentication headers, cors mode, cache...) sh
 
 ### Lazy mode
 
-The request is automatically emitted when the wire adapter config is available, which means when the component is connected to the DOM. This works well for data needed by the component to display right away but, sometimes, the request should be executed manually. This is certainly true for update requests (POST,PUT,DELETE) and for data requested on demand (list for a pop-up, ...).  
+The request is automatically emitted when the wire adapter configuration is available, which means when the component is connected to the DOM. This works well for data needed by the component to display right away but, sometimes, the request should be executed manually. This is certainly true for update requests (POST,PUT,DELETE) and for data requested on demand (list for a pop-up, ...).  
 
-To support that, the wire adapter offers a 'lazy' mode. When set to true, the request is only executed with an explicit call the `fetch()`.  
+To support that, the wire adapter offers a `lazy` mode. When set to true, the request is only executed with an explicit call to a `fetch()` method, provided as part of the @wire variable.  
 
-The fetch method has the following signature:  
+This fetch method has the following signature:  
 
 ```javascript
     fetch(init?: RequestInit, queryParams?: Record<string, any>, variables?: Record<string, any>): Promise<void>
 ``` 
-- init  
+- `init`  
   These are initialization parameters that are merged with the ones defined at the adapter level.  
-- queryParams  
+- `queryParams`  
   Replaces, if defined, the query parameters defined at the wire adapter level.  
-- variables  
+- `variables`  
   Replaces, if defined, the variables defined at the wire adapter level.  
   
-The function returns a `Promise` that one can observe to know when the result has been retrieved. The `Promise` does not provide that value, but it can be accessed from the object member.  
+The function returns a `Promise` that can be observed to know when the result has been retrieved. The `Promise` does not provide that value, but it can be accessed from the @wire variable.  
 
 Here is an example:   
 
@@ -146,18 +148,22 @@ Here is an example:
     
     handleClick() {
     	// Explicitly fetch the data
-    	this.mydata.fetch()
+    	this.mydata.fetch().then( () => {
+    		console.log('The data was retrieved: '+this.mydata.data);
+    	}
     }
 ```
 
 
 ### Current limitations
 
-`useFetch` it kept simple on purpose, but sould be extensible:  
+`useFetch` is kept simple on purpose, but should be enhanced over time:  
 
 - It does not use a store behind the scene, which means that the request results are not cached and shared between adapters.  
 
-- It does not normalize the data (see: [normalizr.js](https://github.com/paularmstrong/normalizr)).
+- It does not normalize the data (see: [normalizr.js](https://github.com/paularmstrong/normalizr)).  
+
+The target browser should have native Fetch available, see: [CanIUse Fetch](https://caniuse.com/#feat=fetch). If not, (ex: IE11), there are some polyfills available: [Fetch Polyfill](https://github.github.io/fetch/).  
 
 
 ## FetchClient
