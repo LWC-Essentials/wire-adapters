@@ -5,8 +5,13 @@
     For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 */
 import { register, ValueChangedEvent } from '@lwc/wire-service';
-
 import { FetchClient, getFetchClient } from './client';
+
+interface FetchParams {
+    init?: RequestInit,
+    queryParams?: Record<string, any>, 
+    variables?: Record<string, any> 
+}; 
 
 interface Result {
     loading:        boolean;
@@ -15,7 +20,7 @@ interface Result {
     initialized:    boolean;
 
     client:         FetchClient;
-    fetch?:         (options?: RequestInit, q?: Record<string, any>|undefined, v?: Record<string, any>|undefined) => Promise<void>;
+    fetch?:         ( params?: FetchParams ) => Promise<void>;
 }
 
 //
@@ -49,14 +54,16 @@ register(useFetch, eventTarget => {
         }
     }
 
-    function fetch(options?: RequestInit, qp?: Record<string, any>|undefined, v?: Record<string, any>|undefined): Promise<void> {
+    function fetch( params?: FetchParams ): Promise<void> {
         if(url) {
-            const _init = {...init, ...options};
+            const _init = {...init, ...(params && params.init) };
+            const _queryParams= {...queryParams, ...(params && params.queryParams) };
+            const _variables = {...variables, ...(params && params.variables) };
             pendingResult.loading = true;
             const fetchIndex=++fetchCurrent;
             update();
             try {
-                return pendingResult.client.fetch(url,_init,qp||queryParams,v||variables).then( (response) => {
+                return pendingResult.client.fetch(url,_init,_queryParams,_variables).then( (response) => {
                     return response.json();
                 }).then( (json: any) => {
                     if(fetchIndex==fetchCurrent) {

@@ -88,7 +88,7 @@ export default class Users extends LightningElement {
     handleUserClick(event) {
         const idx = this._findUserIdx(event);
         if(idx!==undefined) {
-            this.userById.fetch(undefined,undefined,{userId:this.users.data.users[idx].email}).then( () => {
+            this.userById.fetch({variables:{userId:this.users.data.users[idx].email}}).then( () => {
                 // eslint-disable-next-line no-alert
                 alert(JSON.stringify(this.userById.data));
             });

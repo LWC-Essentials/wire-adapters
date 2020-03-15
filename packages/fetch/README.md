@@ -98,7 +98,7 @@ If the URL is more complex to build, then it can be defined as a component prope
        url: '$url',
 		...        
     }) mydata;
-```
+``` 
 
 
 ### Fetch options (init)
@@ -127,14 +127,19 @@ To support that, the wire adapter offers a `lazy` mode. When set to true, the re
 This fetch method has the following signature:  
 
 ```javascript
-    fetch(init?: RequestInit, queryParams?: Record<string, any>, variables?: Record<string, any>): Promise<void>
+    interface FetchParams {
+        init?: RequestInit,
+        queryParams?: Record<string, any>, 
+        variables?: Record<string, any> 
+    }; 
+    fetch(params?: FetchParams): Promise<void>
 ``` 
 - `init`  
   These are initialization parameters that are merged with the ones defined at the adapter level.  
 - `queryParams`  
-  Replaces, if defined, the query parameters defined at the wire adapter level.  
+  Merges, if defined, with the query parameters defined at the wire adapter level.  
 - `variables`  
-  Replaces, if defined, the variables defined at the wire adapter level.  
+  Merges, if defined, with the variables defined at the wire adapter level.  
   
 The function returns a `Promise` that can be observed to know when the result has been retrieved. The `Promise` does not provide that value, but it can be accessed from the @wire variable.  
 
