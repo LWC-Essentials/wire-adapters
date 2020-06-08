@@ -7,6 +7,9 @@
 import { LightningElement, track, createElement } from "lwc";
 import { hasStore, setStore  } from "./store";
 
+import tmp from './StoreComponent.html'
+import tmpe from './StoreComponentEmpty.html'
+
 //
 // Initialize the store
 //
@@ -17,16 +20,33 @@ import { hasStore, setStore  } from "./store";
 // file will be copied as is to the /dist folder. Also, the generated index.js is
 // overridden to export 'initStore', as it can't be exported from Typescript.
 //
-class StoreComponent extends LightningElement {
+let DEBUG_STORE = false;
+const ELEMENT_NANE = "lwce-store";
+
+export default class StoreComponent extends LightningElement {
     
+    debug = DEBUG_STORE;
     @track _store = {};
+    @track asJson = {}
 
     get store() {
         return this._store;
     }
 
     connectedCallback() {
-        setStore(this.store);
+        setStore(this._store);
+    }
+
+    render() {
+        return this.debug ? tmp : tmpe;
+    }
+
+    onRefresh() {
+        this.asJson = JSON.stringify(this._store,null,"  ");
+    }
+    
+    get storeAsJson() {
+        return this.asJson;
     }
 }
 
@@ -37,9 +57,17 @@ export function initStore(content) {
     // Check that we are running in a browser
     // SSR will be different
     if(window && window.document) {
-        const elt = createElement("lwc-store", { is: StoreComponent });
+        const elt = createElement(ELEMENT_NANE, { is: StoreComponent });
         document.body.appendChild(elt);
     } else {
         setStore({},content);
     }
+}
+
+export function setDebugStore(debug) {
+    DEBUG_STORE = debug;
+    const elts = document.getElementsByTagName(ELEMENT_NANE);
+    for(let i=0; i<elts.length; i++) {
+        elts[i].debug = debug;
+      }
 }

@@ -6,4 +6,4 @@
 */
 export { registerInitializer, hasEntry, getEntry, reinitialize, serialize, Mode } from './store/store';
 export { useStore }  from './store/usestore';
-export { initStore }  from './store/initstore';
+export { initStore, setDebugStore }  from './store/initstore';

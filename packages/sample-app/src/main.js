@@ -6,7 +6,7 @@
 */
 import { createElement, register } from "lwc";
 import { FetchClient, setFetchClient } from "@lwce/fetch";
-import { initStore } from "@lwce/store";
+import { initStore, setDebugStore } from "@lwce/store";
 
 import Body from "app/body";
 
@@ -18,6 +18,7 @@ registerWireService(register)
 import "@lwc/synthetic-shadow"
 
 // Initialize the store with no initial content
+setDebugStore(false);
 initStore();
 
 // Create a global fetch client pointing to the current server, within API

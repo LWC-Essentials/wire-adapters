@@ -8,7 +8,7 @@
   "main": "dist/es6/index.js",
   "typings": "dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc && cp src/index.js dist/es6 && cp src/store/initstore.js dist/es6/store && cp src/store/StoreComponent.html dist/es6/store",
+    "build": "tsc && cp src/index.js dist/es6 && cp src/store/initstore.js dist/es6/store && cp src/store/StoreComponent.html dist/es6/store  && cp src/store/StoreComponentEmpty.html dist/es6/store",
     "pack": "yarn build && yarn pack",
     "build-publish": "yarn build && yarn pack && yarn publish --access public",
     "clean": "rm ./*.tgz"
