@@ -4,15 +4,20 @@
     SPDX-License-Identifier: BSD-3-Clause
     For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 */
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { useStore } from '@lwce/store';
 import { addToCart, calculateCart, CART_ENTRY } from '../../commerce/cart';
 
 
+
 export default class Cart extends LightningElement {
 
-    @wire(useStore,{key: CART_ENTRY}) cart;
-
+    //@wire(useStore,{key: CART_ENTRY}) cart;
+    @track cart;
+    @wire(useStore,{key: CART_ENTRY}) function(value) {
+        this.cart = value;
+    };
+    
     handleAdd() {
         // Direct update: it use the membrane capability to update the listeners
         addToCart(this.cart.data);

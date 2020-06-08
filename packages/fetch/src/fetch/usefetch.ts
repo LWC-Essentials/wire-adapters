@@ -4,7 +4,6 @@
     SPDX-License-Identifier: BSD-3-Clause
     For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 */
-import { register, ValueChangedEvent } from '@lwc/wire-service';
 import { FetchClient, getFetchClient } from './client';
 
 interface FetchParams {
@@ -23,80 +22,114 @@ interface Result {
     fetch?:         ( params?: FetchParams ) => Promise<void>;
 }
 
+interface DataCallback {
+    (value: any): void;
+}
+
 //
 // useFetch
 //
-export const useFetch = Symbol('use-fetch');
+export class useFetch {
+    dataCallback: DataCallback
 
-register(useFetch, eventTarget => {
+    connected = false
+    pendingResult: Result
+    init: RequestInit|undefined
+    url: string|undefined
+    queryParams: Record<string,any>|undefined
+    variables: Record<string,any>|undefined
+    lazy=false
+    fetchCurrent=0;
 
-    let connected=false,
-        pendingResult: Result={
+    constructor(dataCallback: DataCallback) {
+        this.dataCallback = dataCallback;
+        this.pendingResult = {
             client: undefined as unknown as FetchClient, // Trick - when sent to the component, it will be defined
             loading:false,
             data: undefined,
             error: undefined,
             initialized: false,
-            fetch
-        },
-        init:RequestInit|undefined,
-        url:string|undefined, 
-        queryParams:Record<string,any>,
-        variables:Record<string,any>,
-        lazy=false,
-        fetchCurrent=0;
-
-    function update() {
-        if(connected) {
-            // Make a copy to make the notification effective
-            const o = Object.assign({},pendingResult);
-            eventTarget.dispatchEvent(new ValueChangedEvent(o));
+            fetch: this.fetch.bind(this)
         }
     }
 
-    function fetch( params?: FetchParams ): Promise<void> {
-        if(url) {
-            const _init = {...init, ...(params && params.init) };
-            const _queryParams= {...queryParams, ...(params && params.queryParams) };
-            const _variables = {...variables, ...(params && params.variables) };
-            pendingResult.loading = true;
-            const fetchIndex=++fetchCurrent;
-            update();
+    update(config: Record<string, any>) {
+        this.pendingResult.client = config.client || getFetchClient();
+        if(!this.pendingResult.client) {
+            throw new Error("No FetchClient is assigned");
+        }
+        this.url = config.url
+        this.lazy = config.lazy
+        this.init = config.init
+        this.variables = config.variables;
+        this.queryParams = config.queryParams;
+        if(!this.lazy) {
+            this.fetch();
+        } else {
+            this.sendUpdate();
+        }
+    }
+
+    connect() {
+        this.connected = true;
+        this.sendUpdate();
+    }
+
+    disconnect() {
+        this.connected = false;
+    }
+
+    sendUpdate() {
+        if(this.connected) {
+            // Make a copy to make the notification effective
+            const o = Object.assign({},this.pendingResult);
+            this.dataCallback(o);
+        }
+    }
+
+    fetch( params?: FetchParams ): Promise<void> {
+        if(this.url) {
+            const _init = {...this.init, ...(params && params.init) };
+            const _queryParams= {...this.queryParams, ...(params && params.queryParams) };
+            const _variables = {...this.variables, ...(params && params.variables) };
+            this.pendingResult.loading = true;
+            const fetchIndex=++this.fetchCurrent;
+            this.sendUpdate();
             try {
-                return pendingResult.client.fetch(url,_init,_queryParams,_variables).then( (response) => {
+                return this.pendingResult.client.fetch(this.url,_init,_queryParams,_variables).then( (response) => {
                     return response.json();
                 }).then( (json: any) => {
-                    if(fetchIndex==fetchCurrent) {
-                        Object.assign(pendingResult, {
+                    if(fetchIndex==this.fetchCurrent) {
+                        Object.assign(this.pendingResult, {
                             loading: false,
                             data: json,
                             error: undefined,
                             initialized: true
                         })
-                        update();
+                        this.sendUpdate();
                         return Promise.resolve();
                     }
                 }).catch( (err: any) => {
-                    if(fetchIndex==fetchCurrent) {
-                        Object.assign(pendingResult, {
+                    if(fetchIndex==this.fetchCurrent) {
+                        Object.assign(this.pendingResult, {
                             loading: false,
                             data: undefined,
                             error: (err && err.toString()) || "Error",
                             initialized: true
                         })
-                        update();
+                        this.sendUpdate();
                         return Promise.resolve();
                     }
                 });
             } catch (error) {
-                if(fetchIndex==fetchCurrent) {
-                    Object.assign(pendingResult, {
+                if(fetchIndex==this.fetchCurrent) {
+                    Object.assign(this.pendingResult, {
                         loading: false,
                         data: undefined,
                         error: error.toString(),
                         initialized: true
                     })
-                    update();
+                    this.sendUpdate();
                     return Promise.resolve();
                 }
             }
@@ -104,41 +137,4 @@ register(useFetch, eventTarget => {
         return Promise.reject()
     }
 
-    function handleConfig(options:any) {
-        pendingResult.client = options.client || getFetchClient();
-        if(!pendingResult.client) {
-            throw new Error("No FetchClient is assigned");
-        }
-        url = options.url
-        lazy = options.lazy
-        init = options.init
-        variables = options.variables;
-        queryParams = options.queryParams;
-        if(!lazy) {
-            fetch();
-        } else {
-            update();
-        }
-    }
-
-    function handleConnect() {
-        connected = true;
-        update();
-    }
-
-    function handleDisconnect() {
-        connected = false;
-        // We should cancel the fetch() if there
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
-        setTimeout( () => {
-            eventTarget.removeEventListener('disconnect', handleDisconnect);
-            eventTarget.removeEventListener('connect', handleConnect);
-            eventTarget.removeEventListener('config', handleConfig);
-        });
-    }
-
-    // Connect the wire adapter
-    eventTarget.addEventListener('config', handleConfig);
-    eventTarget.addEventListener('connect', handleConnect);
-    eventTarget.addEventListener('disconnect', handleDisconnect);
-});
+}

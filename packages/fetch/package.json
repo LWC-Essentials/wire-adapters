@@ -19,8 +19,8 @@
     "types/"
   ],
   "devDependencies": {
-    "@lwc/engine": "1.1.13",
-    "@lwc/wire-service": "^1.1.13",
+    "@lwc/engine": "^1.6.0",
+    "@lwc/wire-service": "^1.6.0",
     "@types/jest": "^25.1.4",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.1",

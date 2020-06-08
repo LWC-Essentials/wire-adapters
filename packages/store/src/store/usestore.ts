@@ -4,8 +4,6 @@
     SPDX-License-Identifier: BSD-3-Clause
     For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 */
-import { unwrap } from '@lwc/engine';
-import { register, ValueChangedEvent } from '@lwc/wire-service';
 
 import { StoreEntry, getEntry } from './store';
 
@@ -14,50 +12,44 @@ import { StoreEntry, getEntry } from './store';
 // useStore
 //
 
-export const useStore = Symbol('use-store');
+interface DataCallback {
+    (value: any): void;
+}
 
-register(useStore, eventTarget => {
+export class useStore {
+    dataCallback: DataCallback;
 
-    let connected: boolean,
-        pendingEntry: StoreEntry|undefined = undefined;
+    connected: boolean = false
+    pendingEntry: StoreEntry|undefined = undefined;
 
-    function updateEntry(entry: StoreEntry): void {
-        if(connected) {
-            const uw = unwrap(entry);
-            eventTarget.dispatchEvent(new ValueChangedEvent(uw));
-        } else {
-            pendingEntry = entry;
-        }
+    constructor(dataCallback: DataCallback) {
+        this.dataCallback = dataCallback;
     }
 
-    function handleConfig(options: any): void {
-        const { key, initializer, mode } = options;
+    update(config: Record<string, any>) {
+        const { key, initializer, mode } = config;
         const v = getEntry(key,initializer,mode);
-        updateEntry(v);
+        this.updateEntry(v);
     }
 
-    function handleConnect() {
-        connected = true;
-        if(pendingEntry) {
-            updateEntry(pendingEntry);
-            pendingEntry = undefined;
+    connect() {
+        this.connected = true;
+        if(this.pendingEntry) {
+            this.updateEntry(this.pendingEntry);
+            this.pendingEntry = undefined;
         }
     }
 
-    function handleDisconnect() {
-        connected = false;
- 
-        // We should cancel the fetch() if there
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
-        setTimeout( () => {
-            eventTarget.removeEventListener('disconnect', handleDisconnect);
-            eventTarget.removeEventListener('connect', handleConnect);
-            eventTarget.removeEventListener('config', handleConfig);
-        });
+    disconnect() {
+        this.connected = false;
     }
 
-    // Connect the wire adapter
-    eventTarget.addEventListener('config', handleConfig);
-    eventTarget.addEventListener('connect', handleConnect);
-    eventTarget.addEventListener('disconnect', handleDisconnect);
-});
+    updateEntry(entry: StoreEntry): void {
+        if(this.connected) {
+            const uw = entry;
+            this.dataCallback(uw)
+        } else {
+            this.pendingEntry = entry;
+        }
+    }
+}
