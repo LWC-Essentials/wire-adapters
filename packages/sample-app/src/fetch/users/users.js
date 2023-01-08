@@ -8,6 +8,7 @@ import { LightningElement, wire, track } from 'lwc';
 import { useFetch } from '@lwce/fetch';
 
 export default class Users extends LightningElement {
+    static renderMode = 'light';
 
     @track queryParams = {
         offset: 0,

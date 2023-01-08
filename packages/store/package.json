@@ -1,6 +1,6 @@
 {
   "name": "@lwce/store",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "LWC global store",
   "license": "BSD-3-Clause",
   "author": "Philippe Riand",
@@ -18,9 +18,7 @@
     "types/"
   ],
   "devDependencies": {
-    "copy": "^0.3.2",
-    "@lwc/engine": "^1.6.0",
-    "@lwc/wire-service": "^1.6.0"
+    "copy": "^0.3.2"
   },
   "dependencies": {
   },

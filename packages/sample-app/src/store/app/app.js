@@ -9,6 +9,7 @@ import { getEntry, reinitialize } from '@lwce/store';
 import { addToCart } from '../../commerce/cart';
 
 export default class App extends LightningElement {
+    static renderMode = 'light';
 
     handleAddBeer() {
         const cart = getEntry("cart");

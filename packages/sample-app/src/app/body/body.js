@@ -10,7 +10,8 @@ import { ROUTER_ENTRY } from '../../commerce/router';
 
 
 export default class Body extends LightningElement {
-
+    static renderMode = 'light';
+    
     // Poor man router, to show the use of a store...
     @wire(useStore,{key: ROUTER_ENTRY}) router;
 

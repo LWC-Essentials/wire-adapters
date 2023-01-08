@@ -7,6 +7,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class FmtCurrency extends LightningElement {
+    static renderMode = 'light';
 
     @api value;
 

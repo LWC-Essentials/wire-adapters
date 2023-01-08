@@ -11,6 +11,7 @@ import { addToCart, calculateCart, CART_ENTRY } from '../../commerce/cart';
 
 
 export default class Cart extends LightningElement {
+    static renderMode = 'light';
 
     //@wire(useStore,{key: CART_ENTRY}) cart;
     @track cart;

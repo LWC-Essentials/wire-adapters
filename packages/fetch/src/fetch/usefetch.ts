@@ -126,7 +126,7 @@ export class useFetch {
                     Object.assign(this.pendingResult, {
                         loading: false,
                         data: undefined,
-                        error: error.toString(),
+                        error: (<any>error).toString(),
                         initialized: true
                     })
                     this.sendUpdate();

@@ -10,6 +10,7 @@ import { CART_ENTRY } from '../../commerce/cart';
 
 
 export default class Checkout extends LightningElement {
+    static renderMode = 'light';
 
     //@wire(useStore,{key: CART_ENTRY}) cart;
     @track cart;

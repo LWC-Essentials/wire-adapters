@@ -11,6 +11,7 @@ import { ROUTER_ENTRY } from '../../commerce/router';
 
 
 export default class Header extends LightningElement {
+    static renderMode = 'light';
 
     @wire(useStore, {key: USER_ENTRY}) user;
     @wire(useStore,{key: ROUTER_ENTRY}) router;
